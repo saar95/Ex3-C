@@ -17,7 +17,7 @@
 char* getword(char w[]) {
 	char* t = malloc(sizeof(char)*WORD+1);
 	int i = 0;
-	while (w[i] != '\n' && w[i] != ',' && w[i] != '\t' && w[i] != ' ' && i < WORD){
+	while (w[i] != '\n' && w[i] != ',' && w[i] != '\t' && w[i] != ' ' && w[i] != '\0' && i < WORD && (int)w[i] != 13){
 		t[i]=w[i];
 		i++;
 	}
@@ -87,7 +87,7 @@ int contain(char* s, char* t) {
 			j++;
 		}
 	}
-	if (i == sizeT) //almog homo לפחות או בידיוק (הומו בטוח הלפחות או בידיוק קשור ל n)
+	if (i == sizeT)
 		return 1;
 	return 0;
 
@@ -96,11 +96,11 @@ int contain(char* s, char* t) {
 void print_lines(char* str) {
 
 	int count=0;
-	FILE *fp;
-   	char buff[255];
+   	char buff[LINE];
    	char* word;
-  	fp = fopen("test.txt", "r");
-   while (fgets(buff, 255, (FILE*)fp)!=NULL)
+	fgets(buff, LINE, (stdin));
+
+   while (fgets(buff, LINE, (stdin))!=NULL)
    {  	count = 0;
 		while(count < strlen(buff)){
    			word = getword(buff+count);
@@ -112,34 +112,49 @@ void print_lines(char* str) {
 			count += strlen(word) + 1;
 		}
    }
-   fclose(fp);
 }
 
 
 void print_similar_words(char* str) {
 	int count=0;
-	FILE *fp;
    	char buff[255];
    	char* word;
-  	fp = fopen("test.txt", "r");
-   while (fgets(buff, 255, (FILE*)fp)!=NULL)
+	fgets(buff, LINE, (stdin));
+   while (fgets(buff, 255, stdin)!=NULL)
    {  	count = 0;
 		while(count < strlen(buff)){
    			word = getword(buff+count);
 			int sum = similar(word,str,1);
 			if(sum==1){
-				printf("%s \n",word);
+				printf("%s\n",word);
 			}
 			count += strlen(word) + 1;
 		}
    }
-   fclose(fp);
-
 }
 
-int main(int argc, char** argv) {
-	char w[] = "cat";
-	print_lines(w);
-	print_similar_words(w);
+int main() {
+    char line[LINE];
+	char w[WORD];
+	fgets(line, LINE ,stdin);
+	int j = 0;
+	int i = 0;
+	for(i = 0 ; i < LINE ; i++){
+		if(line[i] == ' ' || line[i] == '\t' ){
+			break;
+		}
+		else{
+			w[j] = line[i];
+			j++;
+		}
+	}
+	w[j] = '\0';
+	i++;
+	if(line[i] == 'a'){
+		print_lines(w);
+	}
+	if(line[i] == 'b'){
+		print_similar_words(w);
+	}
 	return 0;
 }
